@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 
+template <typename T>
 class Grid {
 public:
   enum class State {
@@ -9,29 +10,35 @@ public:
   };
 
 private:
-  constexpr int _cast(State state) {
+  constexpr inline
+  int mStateCast(State state)
+  {
 	return static_cast<int>(state);
   }
-  constexpr unsigned _to_1D(const unsigned x, const unsigned y) {
+  constexpr inline
+  unsigned mTo1D(const unsigned x, const unsigned y) const
+  {
 	return y*mWidth + x;
   }
-  
-  constexpr static unsigned mWidth=80;
-  constexpr static unsigned mHeight=80;
-  constexpr static unsigned mNCells=mWidth*mHeight;
-  std::array<int, mNCells> mArray;
+
+  constexpr static std::size_t mSizeT = sizeof(T);
+  constexpr static unsigned mFactor = 2; //controls board size
+  constexpr static unsigned mWidth = mFactor * mSizeT;
+  constexpr static unsigned mHeight = mFactor * mSizeT;
+  constexpr static unsigned mNcells = mWidth * mHeight;
+  constexpr static unsigned mNelems = mNcells / mSizeT;
+  std::array<T, mNelems> mArray;
 
 public:
   Grid();
   ~Grid() {};
 
-  int& operator()(const unsigned, const unsigned);
-  int& at(const unsigned, const unsigned);
+  auto operator()(const unsigned, const unsigned) const& -> const State&;
+  auto set(State val, const unsigned, const unsigned) -> void;
 
-  void set();
-  void set(std::array<State, mNCells>);
+  auto set(std::array<State, mNelems>) -> void;
 
-  void set_cell_state(const unsigned, const unsigned, State);
+  auto set_cell_state(const unsigned, const unsigned, State) -> void;
 };
 
 
