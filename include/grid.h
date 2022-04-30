@@ -1,44 +1,55 @@
 #include <iostream>
 #include <array>
+#include <utility>
 
 template <typename T>
 class Grid {
-public:
-  enum class State {
-	Dead = 0,
-	Alive = 1
-  };
-
 private:
   constexpr inline
-  int mStateCast(State state)
-  {
-	return static_cast<int>(state);
-  }
-  constexpr inline
-  unsigned mTo1D(const unsigned x, const unsigned y) const
+  auto mTo1D(const unsigned x, const unsigned y) const -> unsigned
   {
 	return y*mWidth + x;
   }
-
+  inline auto north_west(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x-1, y+1);
+  }
+  inline auto north(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x, y+1);
+  }
+  inline auto east(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x+1, y+1);
+  }
+  inline auto south_east(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x, y+1);
+  }
+  inline auto south(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x, y-1);
+  }
+  inline auto south_west(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x-1, y-1);
+  }
+  inline auto west(const unsigned x, const unsigned y) -> bool
+  {
+	return this->operator()(x-1, y1);
+  }
   constexpr static std::size_t mSizeT = sizeof(T);
-  constexpr static unsigned mFactor = 2; //controls board size
-  constexpr static unsigned mWidth = mFactor * mSizeT;
-  constexpr static unsigned mHeight = mFactor * mSizeT;
-  constexpr static unsigned mNcells = mWidth * mHeight;
-  constexpr static unsigned mNelems = mNcells / mSizeT;
-  std::array<T, mNelems> mArray;
 
 public:
-  Grid();
+  Grid(const unsigned width, const unsigned height);
   ~Grid() {};
 
-  auto operator()(const unsigned, const unsigned) const& -> const State&;
-  auto set(State val, const unsigned, const unsigned) -> void;
+  auto operator()(const unsigned, const unsigned) const& -> const bool&;
+  auto set(bool val, const unsigned, const unsigned) -> void;
 
-  auto set(std::array<State, mNelems>) -> void;
+  auto set(std::array<bool, mNelems>) -> void;
 
-  auto set_cell_state(const unsigned, const unsigned, State) -> void;
+  auto set_cell_state(bool, const unsigned, const unsigned) -> void;
 };
 
 

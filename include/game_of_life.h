@@ -1,4 +1,5 @@
 #include "include/grid.h"
+#include <cstdint>
 
 class GameOfLife {
  public:
@@ -6,5 +7,6 @@ class GameOfLife {
   void tick();
 
  private:
-  Grid grid;
+  Grid<std::uint8_t> grid;
+  Grid::State mApplyRulesToCell(const unsigned x, const unsigned y);
 };
